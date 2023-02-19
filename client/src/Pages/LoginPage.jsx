@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 
 const LoginPage = () => {
   return (
-    <div className='flex justify-center items-center h-[100vh]'>
+    <div className='flex flex-col gap-6 justify-center items-center h-[100vh]'>
+      <h1 className='text-3xl font-bold'>Welcome back</h1>
       <form className='grid p-4 border border-gray-300 rounded shadow'>
         <label htmlFor="email" className='mb-'>Email</label>
         <input className='mb-4 outline-none border border-gray-300 p-2 rounded' type="email" id='email' placeholder='your@email.com' />
