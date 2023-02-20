@@ -7,8 +7,7 @@ import { Link } from 'react-router-dom'
 
 const Header = () => {
   return (
-    <div>
-      <header className='flex justify-between'>
+      <header className='flex justify-between fixed top-0 left-0 right-0 p-4'>
         <Link to='/' className='flex items-center gap-1' >
           <TbBrandAirbnb className='text-red-500 text-xl'/>
           <span className='font-bold text-xl text-red-500'>airbnb</span>
@@ -32,7 +31,6 @@ const Header = () => {
           </div>
         </Link>
       </header>
-    </div>
   )
 }
 
