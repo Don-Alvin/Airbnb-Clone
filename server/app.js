@@ -18,5 +18,6 @@ app.use(express.json());
 app.disable("x-powered-by");
 
 app.use("/", UserRouter);
+app.use("/", UserRouter);
 
 module.exports = app;

@@ -1,5 +1,7 @@
 const User = require("../models/userModel");
+const dotenv = require("dotenv").config({ path: "./.env" });
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const registerUser = async (req, res) => {
 	try {
@@ -9,7 +11,7 @@ const registerUser = async (req, res) => {
 		const userExists = User.findOne({ email });
 
 		if (userExists) {
-			res.status(404);
+			res.json("User aready registered");
 		}
 
 		// create new user
@@ -28,4 +30,35 @@ const registerUser = async (req, res) => {
 	}
 };
 
-module.exports = { registerUser };
+const loginUser = async (req, res) => {
+	const { email, password } = req.body;
+	const jwTSecret = process.env.JWT_SECRET;
+
+	try {
+		// check user exist
+		const user = await User.findOne({ email });
+		if (user) {
+			const passOk = bcrypt.compare(password, user.password);
+
+			if (passOk) {
+				jwt.sign(
+					{ email: user.email, userId: user._id },
+					jwTSecret,
+					{ expiresIn: "24h" },
+					(err, token) => {
+						if (err) throw err;
+						res.cookie("token", token).json("pass ok");
+					}
+				);
+			} else {
+				res.staus(422).json("pass not ok");
+			}
+		} else {
+			res.json("not found");
+		}
+	} catch (error) {
+		res.status(401).send({ error });
+	}
+};
+
+module.exports = { registerUser, loginUser };
