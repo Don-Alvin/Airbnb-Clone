@@ -3,6 +3,7 @@ const dotenv = require("dotenv").config({ path: "./.env" });
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+// Register User
 const registerUser = async (req, res) => {
 	try {
 		const { username, email, password } = req.body;
@@ -11,7 +12,7 @@ const registerUser = async (req, res) => {
 		const userExists = User.findOne({ email });
 
 		if (userExists) {
-			res.json("User aready registered");
+			res.status(404);
 		}
 
 		// create new user
@@ -30,6 +31,7 @@ const registerUser = async (req, res) => {
 	}
 };
 
+// Login User
 const loginUser = async (req, res) => {
 	const { email, password } = req.body;
 	const jwTSecret = process.env.JWT_SECRET;

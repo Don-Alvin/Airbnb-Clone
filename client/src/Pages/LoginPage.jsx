@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import toast, {Toaster} from 'react-hot-toast'
+import axios from 'axios'
 
 const LoginPage = () => {
   const navigate = useNavigate()
@@ -11,9 +12,9 @@ const LoginPage = () => {
     e.preventDefault()
 
     try {
-      await axios.post('/login', ({email, password}))
+      await axios.post('/login', ({email, password}, {withCredentials: true}))
       toast.success('Log in successfull...!')
-      navigate('/home')
+      navigate('/')
     } catch (error) {
       toast.error('Failed to log in. Check if password and email are correct')
     }
