@@ -1,19 +1,32 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import toast, {Toaster} from 'react-hot-toast'
 import axios from 'axios'
+import { UserContext } from '../UserContext'
+import { useSignIn } from 'react-auth-kit'
 
 const LoginPage = () => {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const {setUser} = useContext(UserContext)
+  const signIn = useSignIn()
 
   const submitHandler = async(e) =>{
     e.preventDefault()
 
     try {
-      await axios.post('/login', ({email, password}, {withCredentials: true}))
+      const {data} = await axios.post('/login', ({email, password}))
+      signIn({
+        token: data.token,
+        tokenType: 'Bearer',
+        expiresIn: 3600,
+        authState: email
+      })
+      localStorage.setItem('token', data.token);
+      setUser(data.user)
       toast.success('Log in successfull...!')
+
       navigate('/')
     } catch (error) {
       toast.error('Failed to log in. Check if password and email are correct')
@@ -22,6 +35,7 @@ const LoginPage = () => {
 
   return (
     <>
+      <Toaster position='top-center'></Toaster>
       <div className='flex flex-col gap-6 justify-center items-center h-[100vh]'>
       <h1 className='text-3xl font-bold'>Welcome back</h1>
       <form className='grid p-4 border border-gray-300 rounded shadow' onSubmit={submitHandler}>

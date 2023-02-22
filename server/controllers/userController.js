@@ -40,20 +40,17 @@ const loginUser = async (req, res) => {
 		// check user exist
 		const user = await User.findOne({ email });
 		if (user) {
-			const passOk = bcrypt.compare(password, user.password);
+			const passOk = await bcrypt.compare(password, user.password);
 
 			if (passOk) {
-				jwt.sign(
+				const jwtToken = jwt.sign(
 					{ email: user.email, userId: user._id },
-					jwTSecret,
-					{ expiresIn: "24h" },
-					(err, token) => {
-						if (err) throw err;
-						res.cookie("token", token).json("pass ok");
-					}
+					jwTSecret
 				);
+
+				res.json({ message: "Login successfull", token: jwtToken, user });
 			} else {
-				res.staus(422).json("pass not ok");
+				res.status(422).json("pass not ok");
 			}
 		} else {
 			res.json("not found");

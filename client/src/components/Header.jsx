@@ -1,11 +1,21 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import { TbBrandAirbnb } from 'react-icons/tb'
 import { BiSearch } from 'react-icons/bi'
 import { HiOutlineBars3 } from 'react-icons/hi2'
 import { FaUserAlt } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
+import { UserContext } from '../UserContext'
+import axios from 'axios'
+
 
 const Header = () => {
+  const {user, token} = useContext(UserContext)
+  
+  useEffect(() => {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  }, [token]);
+
+
   return (
       <header className='flex justify-between fixed top-0 left-0 right-0 p-4'>
         <Link to='/' className='flex items-center gap-1' >
@@ -22,13 +32,16 @@ const Header = () => {
           </button>
         </div>
 
-        <Link to='/login' className='flex border border-gray rounded-full py-2 px-4 gap-4 items-center'>
+        <Link to={user? '/account' : '/login'} className='flex border border-gray rounded-full py-2 px-4 gap-4 items-center'>
           <div className='text-xl'>
             <HiOutlineBars3 />
           </div>
-          <div className='bg-gray-500 text-white p-1 rounded-full'>
+          {!!user ? <div>
+            {user.username}
+          </div> : <div className='bg-gray-500 text-white p-1 rounded-full'>
             <FaUserAlt />
-          </div>
+           </div> }
+          
         </Link>
       </header>
   )
